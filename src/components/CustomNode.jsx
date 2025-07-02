@@ -1,6 +1,6 @@
 import { TextNode, ImageNode, VideoNode, ButtonNode } from './nodes';
 
-export default function CustomNode(props) {
+export default function CustomNode({ selected, ...props }) {
   const { type = 'text' } = props.data || {};
   
   const nodeComponents = {
@@ -12,5 +12,5 @@ export default function CustomNode(props) {
   
   const NodeComponent = nodeComponents[type] || TextNode;
   
-  return <NodeComponent {...props} />;
+  return <NodeComponent selected={selected} {...props} />;
 }

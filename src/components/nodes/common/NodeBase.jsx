@@ -8,7 +8,9 @@ export const NodeBase = ({
   icon: Icon, 
   children, 
   showSourceHandles = true,
-  showTargetHandles = true
+  showTargetHandles = true,
+  selected,
+  ...rest
 }) => {
   return (
     <div
@@ -16,11 +18,20 @@ export const NodeBase = ({
         minWidth: 320,
         borderRadius: 16,
         background: '#fff',
-        border: '1.5px solid #e3e6ea',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
+        border: selected ? '2px solid #3182ce' : '1.5px solid #e3e6ea',
+        boxShadow: selected 
+          ? '0 0 0 1px #3182ce, 0 2px 8px rgba(0,0,0,0.1)' 
+          : '0 2px 8px rgba(0,0,0,0.07)',
         overflow: 'hidden',
         fontFamily: 'Inter, Arial, sans-serif',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        position: 'relative',
+        '&:hover': {
+          boxShadow: '0 0 0 1px #3182ce, 0 4px 12px rgba(0,0,0,0.1)'
+        }
       }}
+      {...rest}
     >
       {/* Node Header */}
       <div
@@ -44,7 +55,12 @@ export const NodeBase = ({
       </div>
 
       {/* Node Content */}
-      <div style={{ padding: '16px' }}>
+      <div 
+        style={{ 
+          padding: '16px',
+          pointerEvents: 'none' // Ensure clicks go through to the parent
+        }}
+      >
         {children}
       </div>
 
