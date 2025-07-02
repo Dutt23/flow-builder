@@ -21,7 +21,13 @@ export default function NodesPanel({ selectedNode, onNodeDeselect }) {
   };
 
   if (selectedNode) {
-    return <SelectedNodeMessage node={selectedNode} onBack={onNodeDeselect} />;
+    return (
+      <SelectedNodeMessage 
+        node={selectedNode} 
+        onBack={onNodeDeselect}
+        onNodeUpdate={onNodeDeselect} // Pass the update handler
+      />
+    );
   }
 
   return (

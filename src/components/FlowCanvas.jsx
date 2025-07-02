@@ -1,42 +1,35 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import {
   ReactFlow,
   ReactFlowProvider,
   useNodesState,
   useEdgesState,
   addEdge,
-  Background,
   Controls,
+  Background,
   MiniMap,
 } from '@xyflow/react';
-import CustomNode from './CustomNode';
 import '@xyflow/react/dist/style.css';
-
-const initialNodes = [
-  {
-    id: '1',
-    type: 'customNode',
-    position: { x: 250, y: 150 },
-    data: { label: 'Send Message', text: 'This is a sample message node.' },
-  },
-];
-
-const initialEdges = [];
+import CustomNode from './CustomNode';
 
 const nodeTypes = { customNode: CustomNode };
 
-function FlowCanvasInner({ setSelectedNode }) {
+function FlowCanvasInner({ nodes: initialNodes = [], edges: initialEdges = [], setSelectedNode }) {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  // Update nodes and edges when initial data changes
+  useEffect(() => {
+    setNodes(initialNodes);
+    setEdges(initialEdges);
+  }, [initialNodes, initialEdges, setNodes, setEdges]);
   const reactFlowWrapper = useRef(null);
 
   // Listen for selection changes
   const onSelectionChange = useCallback(({ nodes: selectedNodes }) => {
     if (selectedNodes && selectedNodes.length > 0) {
       setSelectedNode(selectedNodes[0]);
-    } else {
-      setSelectedNode(null);
     }
   }, [setSelectedNode]);
 
@@ -108,10 +101,14 @@ function FlowCanvasInner({ setSelectedNode }) {
   );
 }
 
-export default function FlowCanvas({ setSelectedNode }) {
+export default function FlowCanvas({ nodes = [], edges = [], setSelectedNode }) {
   return (
     <ReactFlowProvider>
-       <FlowCanvasInner setSelectedNode={setSelectedNode} />
+       <FlowCanvasInner 
+        nodes={nodes} 
+        edges={edges} 
+        setSelectedNode={setSelectedNode} 
+      />
     </ReactFlowProvider>
   );
 }

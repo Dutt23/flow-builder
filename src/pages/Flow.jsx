@@ -1,15 +1,43 @@
-import React, { useState } from 'react';
-import { Flex, Box } from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
+import { Flex, Box, Spinner } from '@chakra-ui/react';
 import FlowCanvas from '../components/FlowCanvas';
 import NodesPanel from '../components/NodesPanel';
 import Header from '../components/Header';
+import fetchInitialFlowData from '../data/initialFlowData';
 
 export default function App() {
   const [selectedNode, setSelectedNode] = useState(null);
+  const [flowData, setFlowData] = useState({ nodes: [], edges: [] });
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch initial data on component mount
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchInitialFlowData();
+        setFlowData(data);
+      } catch (error) {
+        console.error('Failed to load flow data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadInitialData();
+  }, []);
 
   const handleNodeDeselect = () => {
     setSelectedNode(null);
   };
+
+  if (isLoading) {
+    return (
+      <Flex justify="center" align="center" height="100vh">
+        <Spinner size="xl" />
+      </Flex>
+    );
+  }
 
   return (
     <Flex direction="column" height="100vh" width="100vw" bg="#f7f8fa" overflow="hidden">
@@ -24,7 +52,8 @@ export default function App() {
           style={{ cursor: 'default' }}
         >
           <FlowCanvas 
-            selectedNode={selectedNode}
+            nodes={flowData.nodes}
+            edges={flowData.edges}
             setSelectedNode={setSelectedNode} 
           />
         </Box>
