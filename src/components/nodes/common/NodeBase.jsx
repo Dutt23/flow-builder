@@ -18,18 +18,19 @@ export const NodeBase = ({
         minWidth: 320,
         borderRadius: 16,
         background: '#fff',
-        border: selected ? '2px solid #3182ce' : '1.5px solid #e3e6ea',
+        border: selected 
+          ? `2px solid ${getBorderColor(type)}` 
+          : '1.5px solid #e3e6ea',
         boxShadow: selected 
-          ? '0 0 0 1px #3182ce, 0 2px 8px rgba(0,0,0,0.1)' 
+          ? `0 0 0 1px ${getBorderColor(type)}, 0 2px 8px ${getBorderColor(type)}40` 
           : '0 2px 8px rgba(0,0,0,0.07)',
-        overflow: 'hidden',
         fontFamily: 'Inter, Arial, sans-serif',
         cursor: 'pointer',
         transition: 'all 0.2s ease',
         position: 'relative',
         pointerEvents: 'all',
         '&:hover': {
-          boxShadow: '0 0 0 1px #3182ce, 0 4px 12px rgba(0,0,0,0.1)'
+          boxShadow: `0 0 0 1px ${getBorderColor(type)}, 0 4px 12px ${getBorderColor(type)}40`
         }
       }}
       {...rest}

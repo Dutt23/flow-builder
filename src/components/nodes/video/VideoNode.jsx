@@ -2,11 +2,12 @@ import React from 'react';
 import { FaVideo } from 'react-icons/fa';
 import { NodeBase } from '../common/NodeBase';
 
-export const VideoNode = ({ data }) => {
+export const VideoNode = ({ data, selected }) => {
   const { label = 'Video', url } = data;
   
   return (
     <NodeBase 
+      selected={selected}
       type="video"
       label={label}
       icon={FaVideo}

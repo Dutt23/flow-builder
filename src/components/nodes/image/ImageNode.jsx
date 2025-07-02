@@ -2,11 +2,12 @@ import React from 'react';
 import { FaImage } from 'react-icons/fa';
 import { NodeBase } from '../common/NodeBase';
 
-export const ImageNode = ({ data }) => {
+export const ImageNode = ({ data, selected }) => {
   const { label = 'Image', url, alt = '' } = data;
   
   return (
     <NodeBase 
+      selected={selected}
       type="image"
       label={label}
       icon={FaImage}

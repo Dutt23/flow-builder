@@ -2,11 +2,12 @@ import React from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { NodeBase } from '../common/NodeBase';
 
-export const TextNode = ({ data }) => {
+export const TextNode = ({ data, selected }) => {
   const { label = 'Text', text = '' } = data;
   
   return (
     <NodeBase 
+      selected={selected}
       type="text"
       label={label}
       icon={FaWhatsapp}
