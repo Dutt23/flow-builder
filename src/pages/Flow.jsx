@@ -45,6 +45,9 @@ export default function App() {
   const [isMobile] = useMediaQuery('(max-width: 768px)');
   const toast = useToast();
 
+  // Sidebar fixed width for desktop
+  const sidebarDesktopWidth = 320; // px
+
   // Auto-open panel on mobile when a node is selected
   useEffect(() => {
     if (isMobile && selectedNode) {
@@ -140,9 +143,6 @@ export default function App() {
     // Here you would typically call your API to save the flow
   }, [flowData, toast]);
 
-  // Sidebar width in px
-  const sidebarWidth = 340;
-
   if (isLoading) {
     return (
       <Flex justify="center" align="center" height="100vh">
@@ -174,16 +174,35 @@ export default function App() {
           />
         </Box>
 
+        {/* Overlay for mobile when sidebar is open */}
+        {isMobile && isPanelOpen && (
+          <Box
+            position="fixed"
+            top="48px"
+            left={0}
+            right={0}
+            bottom={0}
+            bg="blackAlpha.400"
+            zIndex={14}
+            onClick={() => setIsPanelOpen(false)}
+          />
+        )}
+
         {/* Toggle Button */}
         <IconButton
           aria-label={isPanelOpen ? 'Collapse panel' : 'Expand panel'}
-          icon={isPanelOpen
-            ? (isMobile ? <ChevronRightIcon /> : <ChevronRightIcon />)
-            : (isMobile ? <ChevronLeftIcon /> : <ChevronLeftIcon />)
+          icon={
+            isPanelOpen
+              ? (isMobile ? <ChevronRightIcon /> : <ChevronRightIcon />)
+              : (isMobile ? <ChevronLeftIcon /> : <ChevronLeftIcon />)
           }
           onClick={() => setIsPanelOpen(!isPanelOpen)}
           position="fixed"
-          right={isPanelOpen ? (isMobile ? (sidebarWidth + 8) + 'px' : sidebarWidth + 'px') : '8px'}
+          // On mobile: right is 20vw (sidebar width) + 8px; on desktop: right is 320px + 8px
+          right={{
+            base: isPanelOpen ? 'calc(20vw + 8px)' : '8px',
+            md: isPanelOpen ? (sidebarDesktopWidth + 8) + 'px' : '8px',
+          }}
           top="50%"
           transform="translateY(-50%)"
           zIndex={20}
@@ -204,13 +223,18 @@ export default function App() {
 
         {/* Sidebar */}
         <Box
-          width={{ base: '100vw', md: sidebarWidth + 'px' }}
+          width={{ base: '20vw', md: sidebarDesktopWidth + 'px' }}
+          maxW={{ base: '96vw', md: sidebarDesktopWidth + 'px' }}
+          minW="140px"
           bg="white"
           borderLeft="1px solid #e3e6ea"
           height="calc(100vh - 48px)"
           overflowY="auto"
           position="fixed"
-          right={isPanelOpen ? 0 : `-${sidebarWidth}px`}
+          right={{
+            base: isPanelOpen ? 0 : '-20vw',
+            md: isPanelOpen ? 0 : `-${sidebarDesktopWidth}px`,
+          }}
           top="48px"
           bottom={0}
           transition="right 0.3s cubic-bezier(.4,0,.2,1)"
@@ -220,7 +244,7 @@ export default function App() {
               ? { base: '-4px 0 15px rgba(0,0,0,0.1)', md: '-2px 0 10px rgba(0,0,0,0.05)' }
               : 'none'
           }
-          display={isPanelOpen ? 'block' : { base: 'none', md: 'block' }}
+          display="block"
         >
           <Box p={4}>
             <Box mt={4}>
