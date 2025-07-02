@@ -1,6 +1,6 @@
 import { Textarea, VStack, Text } from '@chakra-ui/react';
 import { useState, useEffect, useCallback } from 'react';
-import { debounce } from 'lodash';
+import debounce from 'lodash.debounce';
 
 export default function TextNodeEditor({ node, onUpdate }) {
   const [text, setText] = useState(node?.data?.text || '');

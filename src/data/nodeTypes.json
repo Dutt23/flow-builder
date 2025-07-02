@@ -30,17 +30,6 @@
         "url": "",
         "label": "Video"
       }
-    },
-    {
-      "type": "button",
-      "label": "Button",
-      "description": "Add a button",
-      "icon": "MdSmartButton",
-      "defaultData": {
-        "text": "Click me",
-        "action": "",
-        "label": "Button"
-      }
     }
   ]
 }
