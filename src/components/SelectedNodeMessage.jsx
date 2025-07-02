@@ -1,24 +1,9 @@
 import { Box, Button, VStack, Icon } from '@chakra-ui/react';
 import { FiArrowLeft } from 'react-icons/fi';
-import { TextNodeEditor, DefaultNodeEditor } from './editors';
+import NodeEditor from './editors/NodeEditorFactory';
 
 export default function SelectedNodeMessage({ node, onBack, onNodeUpdate }) {
   if (!node?.data) return null;
-
-  // Determine which editor to use based on node type
-  const renderEditor = () => {
-    if (node.data.type === 'text') {
-      return (
-        <TextNodeEditor 
-          node={node} 
-          onUpdate={onNodeUpdate} 
-        />
-      );
-    }
-    
-    // Default editor for other node types
-    return <DefaultNodeEditor node={node} />;
-  };
 
   return (
     <VStack spacing={4} p={4} align="stretch">
@@ -41,7 +26,10 @@ export default function SelectedNodeMessage({ node, onBack, onNodeUpdate }) {
         p={4}
         bg="blue.50"
       >
-        {renderEditor()}
+    <NodeEditor 
+      node={node} 
+      onUpdate={onNodeUpdate} 
+    />
       </Box>
     </VStack>
   );
