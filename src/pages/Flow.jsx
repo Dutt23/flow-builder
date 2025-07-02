@@ -1,21 +1,26 @@
-import FlowCanvas from './components/FlowCanvas';
-import NodesPanel from './components/NodesPanel';
-import SaveButton from './components/SaveButton';
+import { Flex, Box } from '@chakra-ui/react';
+import FlowCanvas from '../components/FlowCanvas';
+import NodesPanel from '../components/NodesPanel';
+import SaveButton from '../components/SaveButton';
 
 export default function Flow() {
   return (
-    <div style={{ display: 'flex', height: '100vh', background: '#fafbfc' }}>
-      <div style={{ flex: 1, position: 'relative' }}>
+    <Flex height="100vh" width="100vw" bg="#f7f8fa" position="relative" overflow="hidden">
+      <Box flex="1" position="relative" width="calc(100% - 340px)">
         <FlowCanvas />
-      </div>
-      <div style={{ width: 320, borderLeft: '1px solid #eee', position: 'relative', background: '#fff' }}>
-        <div style={{ position: 'absolute', top: 24, right: 24 }}>
-          <SaveButton />
-        </div>
-        <div style={{ marginTop: 80 }}>
-          <NodesPanel />
-        </div>
-      </div>
-    </div>
+      </Box>
+      <Box 
+        width="340px" 
+        bg="white" 
+        borderLeft="1px solid #e3e6ea" 
+        p={4}
+        position="relative"
+        height="100%"
+        overflowY="auto"
+      >
+        <SaveButton />
+        <NodesPanel />
+      </Box>
+    </Flex>
   );
 }
