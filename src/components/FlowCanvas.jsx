@@ -1,4 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
+import { useToast } from '@chakra-ui/react';
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -26,6 +27,7 @@ function FlowCanvasInner({
   const [nodes, setNodes, onNodesChangeLocal] = useNodesState(propNodes);
   const [edges, setEdges, onEdgesChangeLocal] = useEdgesState(propEdges);
   const reactFlowWrapper = useRef(null);
+  const toast = useToast();
 
   // Sync local state with props
   useEffect(() => {
@@ -48,8 +50,26 @@ function FlowCanvasInner({
   }, [onEdgesChangeProp, onEdgesChangeLocal]);
 
   const onConnect = useCallback((params) => {
+    // Check if source handle already has an edge
+    const hasExistingEdge = edges.some(edge => 
+      edge.source === params.source && 
+      edge.sourceHandle === params.sourceHandle
+    );
+
+    if (hasExistingEdge) {
+      toast({
+        title: 'Connection Error',
+        description: 'Source handle already has an edge',
+        status: 'error',
+        duration: 2000,
+        isClosable: true,
+        position: 'bottom-right'
+      });
+      return;
+    }
+
     if (onConnectProp) onConnectProp(params);
-  }, [onConnectProp]);
+  }, [edges, onConnectProp]);
 
   // Listen for selection changes
   const onSelectionChange = useCallback(({ nodes: selectedNodes }) => {

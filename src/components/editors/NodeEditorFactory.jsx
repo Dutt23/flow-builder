@@ -7,13 +7,8 @@ const editorRegistry = {
   // Add more editors here as needed
 };
 
-/**
- * NodeEditor component that renders the appropriate editor based on node type
- * @param {Object} props
- * @param {Object} props.node - The node object
- * @param {Function} props.onUpdate - Callback when node is updated
- */
-const NodeEditor = ({ node, onUpdate }) => {
+
+export default function NodeEditor ({ node, onUpdate }) {
   if (!node?.data) return null;
 
   // Get the appropriate editor component or fallback to DefaultNodeEditor
@@ -25,5 +20,3 @@ const NodeEditor = ({ node, onUpdate }) => {
     </React.Suspense>
   );
 };
-
-export default NodeEditor;

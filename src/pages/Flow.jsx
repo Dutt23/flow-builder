@@ -80,7 +80,6 @@ export default function App() {
     );
   }
 
-  console.log(flowData)
   return (
     <Flex direction="column" height="100vh" width="100vw" bg="#f7f8fa" overflow="hidden">
       <Header />

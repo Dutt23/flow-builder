@@ -8,8 +8,8 @@ export const NodeBase = ({
   icon: Icon, 
   children, 
   data,
-  showSourceHandle = true,
-  showTargetHandle = true
+  showSourceHandles = true,
+  showTargetHandles = true
 }) => {
   return (
     <div
@@ -49,37 +49,40 @@ export const NodeBase = ({
         {children}
       </div>
 
-      {/* Handles */}
-      {showTargetHandle && (
+      {/* Left Handle - Target */}
+      {showTargetHandles && (
         <Handle
+          id="target"
           type="target"
           position={Position.Left}
           style={{
             background: getHandleColor(type),
+            width: '14px',
+            height: '14px',
             border: '2px solid #fff',
-            width: 10,
-            height: 10,
-            borderRadius: '50%',
             top: '50%',
+            left: '-7px',
             transform: 'translateY(-50%)',
-            zIndex: 10,
+            zIndex: 1
           }}
         />
       )}
-      
-      {showSourceHandle && (
+
+      {/* Right Handle - Source */}
+      {showSourceHandles && (
         <Handle
+          id="source"
           type="source"
           position={Position.Right}
           style={{
             background: getHandleColor(type),
+            width: '14px',
+            height: '14px',
             border: '2px solid #fff',
-            width: 10,
-            height: 10,
-            borderRadius: '50%',
             top: '50%',
+            right: '-7px',
             transform: 'translateY(-50%)',
-            zIndex: 10,
+            zIndex: 1
           }}
         />
       )}
