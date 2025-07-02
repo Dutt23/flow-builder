@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -26,6 +26,7 @@ const initialEdges = [];
 const nodeTypes = { customNode: CustomNode };
 
 function FlowCanvasInner({ setSelectedNode }) {
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const reactFlowWrapper = useRef(null);
@@ -43,22 +44,33 @@ function FlowCanvasInner({ setSelectedNode }) {
     (event) => {
       event.preventDefault();
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-      const type = event.dataTransfer.getData('application/reactflow');
-      if (!type) return;
+      const nodeData = event.dataTransfer.getData('application/reactflow');
+      if (!nodeData) return;
 
+      const { type, data } = JSON.parse(nodeData);
+      
+      // Get the drop position relative to the React Flow container
       const position = {
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
       };
+
+      // Create a new node with the calculated position
       const newNode = {
-        id: `${+new Date()}`,
+        id: `${type}-${+new Date()}`,
         type: 'customNode',
-        position,
-        data: { label: 'Send Message', text: 'New message' },
+        position: {
+          x: position.x / (reactFlowInstance?.getZoom() || 1) - (reactFlowInstance?.getViewport().x || 0),
+          y: position.y / (reactFlowInstance?.getZoom() || 1) - (reactFlowInstance?.getViewport().y || 0)
+        },
+        data: {
+          ...data,
+          type, // Store the node type for rendering
+        },
       };
       setNodes((nds) => nds.concat(newNode));
     },
-    [setNodes]
+    [setNodes, reactFlowInstance]
   );
 
   const onConnect = useCallback(
@@ -83,6 +95,7 @@ function FlowCanvasInner({ setSelectedNode }) {
         onSelectionChange={onSelectionChange}
         onDrop={onDrop}
         onDragOver={onDragOver}
+        onInit={setReactFlowInstance}
         fitView
         style={{ width: '100%', height: '100%' }}
         defaultViewport={{ x: 0, y: 0, zoom: 1 }}

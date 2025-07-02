@@ -1,0 +1,46 @@
+{
+  "nodes": [
+    {
+      "type": "text",
+      "label": "Text Message",
+      "description": "Send a text message",
+      "icon": "MdMessage",
+      "defaultData": {
+        "text": "New text message",
+        "label": "Text Message"
+      }
+    },
+    {
+      "type": "image",
+      "label": "Image",
+      "description": "Send an image",
+      "icon": "MdImage",
+      "defaultData": {
+        "url": "",
+        "altText": "",
+        "label": "Image"
+      }
+    },
+    {
+      "type": "video",
+      "label": "Video",
+      "description": "Send a video",
+      "icon": "MdVideocam",
+      "defaultData": {
+        "url": "",
+        "label": "Video"
+      }
+    },
+    {
+      "type": "button",
+      "label": "Button",
+      "description": "Add a button",
+      "icon": "MdSmartButton",
+      "defaultData": {
+        "text": "Click me",
+        "action": "",
+        "label": "Button"
+      }
+    }
+  ]
+}
