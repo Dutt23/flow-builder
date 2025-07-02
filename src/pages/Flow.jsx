@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Flex, Box, Spinner } from '@chakra-ui/react';
+import { applyNodeChanges, applyEdgeChanges, addEdge } from '@xyflow/react';
 import FlowCanvas from '../components/FlowCanvas';
 import NodesPanel from '../components/NodesPanel';
 import Header from '../components/Header';
@@ -31,6 +32,46 @@ export default function App() {
     setSelectedNode(null);
   };
 
+  const handleNodesChange = useCallback((changes) => {
+    setFlowData(prev => ({
+      ...prev,
+      nodes: applyNodeChanges(changes, prev.nodes)
+    }));
+  }, []);
+
+  const handleEdgesChange = useCallback((changes) => {
+    setFlowData(prev => ({
+      ...prev,
+      edges: applyEdgeChanges(changes, prev.edges)
+    }));
+  }, []);
+
+  const handleConnect = useCallback((connection) => {
+    setFlowData(prev => ({
+      ...prev,
+      edges: addEdge(connection, prev.edges)
+    }));
+  }, []);
+
+  const handleNodeUpdate = useCallback((updatedNode) => {
+    setFlowData(prev => ({
+      ...prev,
+      nodes: prev.nodes.map(node => 
+        node.id === updatedNode.id ? {
+          ...node,
+          data: { ...updatedNode.data }
+        } : node
+      )
+    }));
+    
+    if (selectedNode && selectedNode.id === updatedNode.id) {
+      setSelectedNode(prev => ({
+        ...prev,
+        data: { ...updatedNode.data }
+      }));
+    }
+  }, [selectedNode]);
+
   if (isLoading) {
     return (
       <Flex justify="center" align="center" height="100vh">
@@ -39,6 +80,7 @@ export default function App() {
     );
   }
 
+  console.log(flowData)
   return (
     <Flex direction="column" height="100vh" width="100vw" bg="#f7f8fa" overflow="hidden">
       <Header />
@@ -54,7 +96,10 @@ export default function App() {
           <FlowCanvas 
             nodes={flowData.nodes}
             edges={flowData.edges}
-            setSelectedNode={setSelectedNode} 
+            setSelectedNode={setSelectedNode}
+            onNodesChange={handleNodesChange}
+            onEdgesChange={handleEdgesChange}
+            onConnect={handleConnect}
           />
         </Box>
         
@@ -73,6 +118,7 @@ export default function App() {
               <NodesPanel 
                 selectedNode={selectedNode} 
                 onNodeDeselect={handleNodeDeselect}
+                onNodeUpdate={handleNodeUpdate}
               />
             </Box>
           </Box>

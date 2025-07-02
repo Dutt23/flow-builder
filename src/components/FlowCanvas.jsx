@@ -14,17 +14,42 @@ import CustomNode from './CustomNode';
 
 const nodeTypes = { customNode: CustomNode };
 
-function FlowCanvasInner({ nodes: initialNodes = [], edges: initialEdges = [], setSelectedNode }) {
+function FlowCanvasInner({ 
+  nodes: propNodes = [], 
+  edges: propEdges = [], 
+  setSelectedNode,
+  onNodesChange: onNodesChangeProp,
+  onEdgesChange: onEdgesChangeProp,
+  onConnect: onConnectProp
+}) {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
-  // Update nodes and edges when initial data changes
-  useEffect(() => {
-    setNodes(initialNodes);
-    setEdges(initialEdges);
-  }, [initialNodes, initialEdges, setNodes, setEdges]);
+  const [nodes, setNodes, onNodesChangeLocal] = useNodesState(propNodes);
+  const [edges, setEdges, onEdgesChangeLocal] = useEdgesState(propEdges);
   const reactFlowWrapper = useRef(null);
+
+  // Sync local state with props
+  useEffect(() => {
+    setNodes(propNodes);
+  }, [propNodes, setNodes]);
+
+  useEffect(() => {
+    setEdges(propEdges);
+  }, [propEdges, setEdges]);
+
+  // Combine local and parent handlers
+  const onNodesChange = useCallback((changes) => {
+    onNodesChangeLocal(changes);
+    if (onNodesChangeProp) onNodesChangeProp(changes);
+  }, [onNodesChangeProp, onNodesChangeLocal]);
+
+  const onEdgesChange = useCallback((changes) => {
+    onEdgesChangeLocal(changes);
+    if (onEdgesChangeProp) onEdgesChangeProp(changes);
+  }, [onEdgesChangeProp, onEdgesChangeLocal]);
+
+  const onConnect = useCallback((params) => {
+    if (onConnectProp) onConnectProp(params);
+  }, [onConnectProp]);
 
   // Listen for selection changes
   const onSelectionChange = useCallback(({ nodes: selectedNodes }) => {
@@ -33,43 +58,42 @@ function FlowCanvasInner({ nodes: initialNodes = [], edges: initialEdges = [], s
     }
   }, [setSelectedNode]);
 
-  const onDrop = useCallback(
-    (event) => {
-      event.preventDefault();
-      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-      const nodeData = event.dataTransfer.getData('application/reactflow');
-      if (!nodeData) return;
+  const onDrop = useCallback((event) => {
+    event.preventDefault();
+    const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+    const nodeData = event.dataTransfer.getData('application/reactflow');
+    if (!nodeData) return;
 
-      const { type, data } = JSON.parse(nodeData);
-      
-      // Get the drop position relative to the React Flow container
-      const position = {
-        x: event.clientX - reactFlowBounds.left,
-        y: event.clientY - reactFlowBounds.top,
-      };
+    const { type, data } = JSON.parse(nodeData);
+    
+    // Get the drop position relative to the React Flow container
+    const position = reactFlowInstance.screenToFlowPosition({
+      x: event.clientX - reactFlowBounds.left,
+      y: event.clientY - reactFlowBounds.top,
+    });
 
-      // Create a new node with the calculated position
-      const newNode = {
-        id: `${type}-${+new Date()}`,
-        type: 'customNode',
-        position: {
-          x: position.x / (reactFlowInstance?.getZoom() || 1) - (reactFlowInstance?.getViewport().x || 0),
-          y: position.y / (reactFlowInstance?.getZoom() || 1) - (reactFlowInstance?.getViewport().y || 0)
-        },
-        data: {
-          ...data,
-          type, // Store the node type for rendering
-        },
-      };
-      setNodes((nds) => nds.concat(newNode));
-    },
-    [setNodes, reactFlowInstance]
-  );
+    const newNode = {
+      id: `${type}-${Date.now()}`,
+      type: 'customNode',
+      position,
+      data: {
+        ...data,
+        type,
+        label: data?.label || type.charAt(0).toUpperCase() + type.slice(1)
+      }
+    };
 
-  const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
-  );
+    // Update local state
+    setNodes(nds => [...nds, newNode]);
+    
+    // Notify parent
+    if (onNodesChangeProp) {
+      onNodesChangeProp([{ type: 'add', item: newNode }]);
+    }
+
+    // Select the new node
+    setSelectedNode(newNode);
+  }, [reactFlowInstance, setNodes, setSelectedNode, onNodesChangeProp]);
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
@@ -77,38 +101,33 @@ function FlowCanvasInner({ nodes: initialNodes = [], edges: initialEdges = [], s
   }, []);
 
   return (
-    <div ref={reactFlowWrapper} style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+    <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{ height: '100%', width: '100%' }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        nodeTypes={nodeTypes}
-        onSelectionChange={onSelectionChange}
+        onInit={setReactFlowInstance}
         onDrop={onDrop}
         onDragOver={onDragOver}
-        onInit={setReactFlowInstance}
+        onNodeClick={(_, node) => setSelectedNode(node)}
+        onSelectionChange={onSelectionChange}
+        nodeTypes={nodeTypes}
         fitView
-        style={{ width: '100%', height: '100%' }}
-        defaultViewport={{ x: 0, y: 0, zoom: 1 }}
       >
-        <Background color="#f7f8fa" gap={32} />
+        <MiniMap />
         <Controls />
-        <MiniMap nodeColor={() => '#1976d2'} />
+        <Background />
       </ReactFlow>
     </div>
   );
 }
 
-export default function FlowCanvas({ nodes = [], edges = [], setSelectedNode }) {
+export default function FlowCanvas(props) {
   return (
     <ReactFlowProvider>
-       <FlowCanvasInner 
-        nodes={nodes} 
-        edges={edges} 
-        setSelectedNode={setSelectedNode} 
-      />
+      <FlowCanvasInner {...props} />
     </ReactFlowProvider>
   );
 }
