@@ -1,6 +1,7 @@
-import { Button } from '@chakra-ui/react';
+import { Button, Tooltip } from '@chakra-ui/react';
+import { FaSave } from 'react-icons/fa';
 
-export default function SaveButton({ size = 'sm' }) {
+export default function SaveButton({ size = 'md', onClick }) {
   return (
     <Button
       colorScheme="blue"
@@ -9,7 +10,7 @@ export default function SaveButton({ size = 'sm' }) {
       fontSize={size === 'sm' ? 'xs' : 'sm'}
       px={size === 'sm' ? 3 : 4}
       fontWeight="medium"
-      onClick={() => alert('Changes saved!')}
+      onClick={onClick}
     >
       Save Changes
     </Button>

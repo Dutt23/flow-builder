@@ -1,7 +1,7 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import SaveButton from './SaveButton';
 
-export default function Header() {
+export default function Header({ onSave }) {
   return (
     <Box
       width="100%"
@@ -28,7 +28,7 @@ export default function Header() {
           Flow Builder
         </Text>
         <Box display="flex" alignItems="center" height="100%">
-          <SaveButton size="sm" />
+          <SaveButton size="sm" onClick={onSave} />
         </Box>
       </Flex>
     </Box>
