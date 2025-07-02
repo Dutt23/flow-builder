@@ -1,18 +1,22 @@
 import { Box, Center, Text } from '@chakra-ui/react';
 import { MdMessage } from 'react-icons/md';
+import SelectedNodeMessage from './SelectedNodeMessage';
 
-export default function NodesPanel() {
-  const onDragStart = (event, nodeType) => {
-    event.dataTransfer.setData('application/reactflow', nodeType);
-    event.dataTransfer.effectAllowed = 'move';
-  };
+export default function NodesPanel({ selectedNode }) {
+  if (selectedNode) {
+    return <SelectedNodeMessage node={selectedNode} />;
+  }
 
+  // Default draggable card
   return (
     <Center width="100%">
       <Box
         as="div"
         draggable
-        onDragStart={e => onDragStart(e, 'customNode')}
+        onDragStart={e => {
+          e.dataTransfer.setData('application/reactflow', 'customNode');
+          e.dataTransfer.effectAllowed = 'move';
+        }}
         border="2px solid"
         borderColor="blue.400"
         borderRadius="lg"

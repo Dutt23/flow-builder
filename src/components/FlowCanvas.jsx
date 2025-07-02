@@ -25,10 +25,19 @@ const initialEdges = [];
 
 const nodeTypes = { customNode: CustomNode };
 
-function FlowCanvasInner() {
+function FlowCanvasInner({ setSelectedNode }) {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const reactFlowWrapper = useRef(null);
+
+  // Listen for selection changes
+  const onSelectionChange = useCallback(({ nodes: selectedNodes }) => {
+    if (selectedNodes && selectedNodes.length > 0) {
+      setSelectedNode(selectedNodes[0]);
+    } else {
+      setSelectedNode(null);
+    }
+  }, [setSelectedNode]);
 
   const onDrop = useCallback(
     (event) => {
@@ -71,6 +80,7 @@ function FlowCanvasInner() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
+        onSelectionChange={onSelectionChange}
         onDrop={onDrop}
         onDragOver={onDragOver}
         fitView
@@ -85,10 +95,10 @@ function FlowCanvasInner() {
   );
 }
 
-export default function FlowCanvas() {
+export default function FlowCanvas({ setSelectedNode }) {
   return (
     <ReactFlowProvider>
-      <FlowCanvasInner />
+       <FlowCanvasInner setSelectedNode={setSelectedNode} />
     </ReactFlowProvider>
   );
 }

@@ -1,14 +1,14 @@
 import { Button } from '@chakra-ui/react';
 
-export default function SaveButton() {
+export default function SaveButton({ size = 'sm' }) {
   return (
     <Button
       colorScheme="blue"
       variant="outline"
-      mb={8}
-      size="lg"
-      width="90%"
-      fontWeight="bold"
+      size={size}
+      fontSize={size === 'sm' ? 'xs' : 'sm'}
+      px={size === 'sm' ? 3 : 4}
+      fontWeight="medium"
       onClick={() => alert('Changes saved!')}
     >
       Save Changes
