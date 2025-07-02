@@ -11,11 +11,9 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import CustomNode from './CustomNode';
-import ImageNode from './nodes/types/ImageNode';
 
 const nodeTypes = { 
   customNode: CustomNode,
-  image: ImageNode
 };
 
 function FlowCanvasInner({ 
@@ -94,13 +92,10 @@ function FlowCanvasInner({
       x: event.clientX - reactFlowBounds.left,
       y: event.clientY - reactFlowBounds.top,
     });
-
-    // Determine the node type based on the node data
-    const nodeType = type === 'image' ? 'image' : 'customNode';
     
     const newNode = {
       id: `${type}-${Date.now()}`,
-      type: nodeType,
+      type: 'customNode',
       position,
       data: {
         ...data,

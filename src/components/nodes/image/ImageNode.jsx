@@ -3,7 +3,7 @@ import { FaImage } from 'react-icons/fa';
 import { NodeBase } from '../common/NodeBase';
 
 export const ImageNode = ({ data }) => {
-  const { label = 'Image', url, altText } = data;
+  const { label = 'Image', url, alt = '' } = data;
   
   return (
     <NodeBase 
@@ -12,29 +12,52 @@ export const ImageNode = ({ data }) => {
       icon={FaImage}
       data={data}
     >
-      {url ? (
-        <div style={{ textAlign: 'center' }}>
+      <div style={{ 
+        background: '#f9fafb', 
+        padding: '12px', 
+        borderRadius: '4px',
+        borderLeft: '3px solid #93c5fd',
+        textAlign: 'center'
+      }}>
+        {url ? (
           <div style={{ 
-            background: '#f3f4f6', 
-            height: '100px', 
+            maxHeight: '200px',
             display: 'flex',
-            alignItems: 'center',
             justifyContent: 'center',
-            marginBottom: '8px',
-            borderRadius: '4px',
-            overflow: 'hidden'
+            alignItems: 'center',
+            overflow: 'hidden',
+            marginBottom: '8px'
           }}>
             <img 
               src={url} 
-              alt={altText || ''} 
-              style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} 
+              alt={alt} 
+              style={{ 
+                maxWidth: '100%', 
+                maxHeight: '100%', 
+                objectFit: 'contain' 
+              }} 
             />
           </div>
-          {altText && <div style={{ fontSize: '12px', color: '#6b7280' }}>{altText}</div>}
-        </div>
-      ) : (
-        <div style={{ color: '#6b7280', fontStyle: 'italic' }}>No image selected</div>
-      )}
+        ) : (
+          <div style={{ 
+            color: '#6b7280', 
+            fontStyle: 'italic',
+            padding: '20px 0'
+          }}>
+            No image selected
+          </div>
+        )}
+        {alt && (
+          <div style={{ 
+            fontSize: '12px', 
+            color: '#6b7280',
+            marginTop: '8px',
+            fontStyle: 'italic'
+          }}>
+            {alt}
+          </div>
+        )}
+      </div>
     </NodeBase>
   );
 };

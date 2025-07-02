@@ -7,7 +7,6 @@ export const NodeBase = ({
   label, 
   icon: Icon, 
   children, 
-  data,
   showSourceHandles = true,
   showTargetHandles = true
 }) => {

@@ -3,8 +3,8 @@ import { DefaultNodeEditor } from '.';
 
 // Map of node types to their editor components
 const editorRegistry = {
-  text: React.lazy(() => import('./TextNodeEditor')),
-  image: React.lazy(() => import('../nodes/types/ImageNode/editor')),
+  text: React.lazy(() => import('../nodes/text/TextEditor')),
+  image: React.lazy(() => import('../nodes/image/ImageEditor')),
   // Add more editors here as needed
 };
 

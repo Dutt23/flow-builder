@@ -126,7 +126,6 @@ export default function App() {
     });
     
     // Here you would typically call your API to save the flow
-    console.log('Saving flow:', flowData);
   }, [flowData, toast]);
 
   if (isLoading) {
