@@ -1,11 +1,10 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react';
+import { useCallback, useRef, useState, useEffect } from 'react';
 import { useToast } from '@chakra-ui/react';
 import {
   ReactFlow,
   ReactFlowProvider,
   useNodesState,
   useEdgesState,
-  addEdge,
   Controls,
   Background,
   MiniMap,
