@@ -1,34 +1,21 @@
-import React, { useCallback } from 'react';
-import { ReactFlow, useNodesState, useEdgesState, addEdge } from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
-
-const initialNodes = [
-  { id: '1', position: { x: 0, y: 0 }, data: { label: 'Node 1' } },
-  { id: '2', position: { x: 0, y: 100 }, data: { label: 'Node 2' } },
-];
-
-const initialEdges = [
-  { id: 'e1-2', source: '1', target: '2' },
-];
+import FlowCanvas from './components/FlowCanvas';
+import NodesPanel from './components/NodesPanel';
+import SaveButton from './components/SaveButton';
 
 export default function Flow() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
-  const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
-  );
-
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-      />
+    <div style={{ display: 'flex', height: '100vh', background: '#fafbfc' }}>
+      <div style={{ flex: 1, position: 'relative' }}>
+        <FlowCanvas />
+      </div>
+      <div style={{ width: 320, borderLeft: '1px solid #eee', position: 'relative', background: '#fff' }}>
+        <div style={{ position: 'absolute', top: 24, right: 24 }}>
+          <SaveButton />
+        </div>
+        <div style={{ marginTop: 80 }}>
+          <NodesPanel />
+        </div>
+      </div>
     </div>
   );
 }
