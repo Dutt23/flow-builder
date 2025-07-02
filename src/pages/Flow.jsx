@@ -7,14 +7,26 @@ import Header from '../components/Header';
 export default function App() {
   const [selectedNode, setSelectedNode] = useState(null);
 
+  const handleNodeDeselect = () => {
+    setSelectedNode(null);
+  };
+
   return (
     <Flex direction="column" height="100vh" width="100vw" bg="#f7f8fa" overflow="hidden">
       <Header />
       
       <Flex flex="1" mt="48px">
         {/* Main Canvas Area - takes remaining space */}
-        <Box flex="1" position="relative">
-          <FlowCanvas setSelectedNode={setSelectedNode} />
+        <Box 
+          flex="1" 
+          position="relative"
+          onClick={handleNodeDeselect}
+          style={{ cursor: 'default' }}
+        >
+          <FlowCanvas 
+            selectedNode={selectedNode}
+            setSelectedNode={setSelectedNode} 
+          />
         </Box>
         
         {/* Sidebar - fixed width on the right */}
@@ -29,7 +41,10 @@ export default function App() {
         >
           <Box p={4}>
             <Box mt={4}>
-              <NodesPanel selectedNode={selectedNode} />
+              <NodesPanel 
+                selectedNode={selectedNode} 
+                onNodeDeselect={handleNodeDeselect}
+              />
             </Box>
           </Box>
         </Box>

@@ -4,7 +4,7 @@ import SelectedNodeMessage from './SelectedNodeMessage';
 import NodeItem from './NodeItem';
 import nodeTypesData from '../data/nodeTypes.json';
 
-export default function NodesPanel({ selectedNode }) {
+export default function NodesPanel({ selectedNode, onNodeDeselect }) {
   const [nodeTypes, setNodeTypes] = useState([]);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function NodesPanel({ selectedNode }) {
   };
 
   if (selectedNode) {
-    return <SelectedNodeMessage node={selectedNode} />;
+    return <SelectedNodeMessage node={selectedNode} onBack={onNodeDeselect} />;
   }
 
   return (
