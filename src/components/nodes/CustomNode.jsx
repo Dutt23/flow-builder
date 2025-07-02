@@ -1,4 +1,4 @@
-import { TextNode, ImageNode, VideoNode, ButtonNode } from './nodes';
+import { TextNode, ImageNode, VideoNode, ButtonNode } from '../nodes';
 
 export default function CustomNode({ selected, ...props }) {
   const { type = 'text' } = props.data || {};

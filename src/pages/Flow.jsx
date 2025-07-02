@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Flex, Box, Spinner, useToast } from '@chakra-ui/react';
 import { applyNodeChanges, applyEdgeChanges, addEdge } from '@xyflow/react';
-import FlowCanvas from '../components/FlowCanvas';
+import FlowCanvas from '../components/flow/FlowCanvas';
 import NodesPanel from '../components/NodesPanel';
-import Header from '../components/Header';
+import Header from '../components/ui/header/Header';
 import fetchInitialFlowData from '../data/initialFlowData';
 
 // Function to validate the flow
@@ -151,6 +151,7 @@ export default function App() {
           <FlowCanvas 
             nodes={flowData.nodes}
             edges={flowData.edges}
+            selectedNode={selectedNode}
             setSelectedNode={setSelectedNode}
             onNodesChange={handleNodesChange}
             onEdgesChange={handleEdgesChange}

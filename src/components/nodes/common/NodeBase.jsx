@@ -27,6 +27,7 @@ export const NodeBase = ({
         cursor: 'pointer',
         transition: 'all 0.2s ease',
         position: 'relative',
+        pointerEvents: 'all',
         '&:hover': {
           boxShadow: '0 0 0 1px #3182ce, 0 4px 12px rgba(0,0,0,0.1)'
         }
@@ -58,7 +59,7 @@ export const NodeBase = ({
       <div 
         style={{ 
           padding: '16px',
-          pointerEvents: 'none' // Ensure clicks go through to the parent
+          pointerEvents: 'auto' // Allow interactions with the content
         }}
       >
         {children}

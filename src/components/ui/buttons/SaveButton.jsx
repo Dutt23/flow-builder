@@ -1,5 +1,4 @@
-import { Button, Tooltip } from '@chakra-ui/react';
-import { FaSave } from 'react-icons/fa';
+import { Button } from '@chakra-ui/react';
 
 export default function SaveButton({ size = 'md', onClick }) {
   return (

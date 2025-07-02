@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import SaveButton from './SaveButton';
+import SaveButton from '../buttons/SaveButton';
 
 export default function Header({ onSave }) {
   return (

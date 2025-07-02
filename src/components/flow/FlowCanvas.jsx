@@ -10,15 +10,16 @@ import {
   MiniMap,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import CustomNode from './CustomNode';
+import CustomNode from '../nodes/CustomNode';
 
 const nodeTypes = { 
-  customNode: CustomNode,
+  customNode: (props) => <CustomNode {...props} />,
 };
 
 function FlowCanvasInner({ 
   nodes: propNodes = [], 
   edges: propEdges = [], 
+  selectedNode,
   setSelectedNode,
   onNodesChange: onNodesChangeProp,
   onEdgesChange: onEdgesChangeProp,
@@ -72,11 +73,15 @@ function FlowCanvasInner({
     if (onConnectProp) onConnectProp(params);
   }, [edges, onConnectProp]);
 
-  // Listen for selection changes
-  const onSelectionChange = useCallback(({ nodes: selectedNodes }) => {
-    if (selectedNodes && selectedNodes.length > 0) {
-      setSelectedNode(selectedNodes[0]);
-    }
+  // Handle node click
+  const onNodeClick = useCallback((event, node) => {
+    event.stopPropagation();
+    setSelectedNode(node);
+  }, [setSelectedNode]);
+
+  // Handle pane click to clear selection
+  const onPaneClick = useCallback(() => {
+    setSelectedNode(null);
   }, [setSelectedNode]);
 
   const onDrop = useCallback((event) => {
@@ -121,10 +126,20 @@ function FlowCanvasInner({
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
+  // Update nodes with selected state
+  const nodesWithSelection = nodes.map(node => ({
+    ...node,
+    selected: selectedNode ? node.id === selectedNode.id : false,
+    data: {
+      ...node.data,
+      selected: selectedNode ? node.id === selectedNode.id : false
+    }
+  }));
+
   return (
     <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{ height: '100%', width: '100%' }}>
       <ReactFlow
-        nodes={nodes}
+        nodes={nodesWithSelection}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
@@ -132,10 +147,13 @@ function FlowCanvasInner({
         onInit={setReactFlowInstance}
         onDrop={onDrop}
         onDragOver={onDragOver}
-        onNodeClick={(_, node) => setSelectedNode(node)}
-        onSelectionChange={onSelectionChange}
+        onNodeClick={onNodeClick}
+        onPaneClick={onPaneClick}
         nodeTypes={nodeTypes}
         fitView
+        nodesDraggable={true}
+        nodesConnectable={true}
+        elementsSelectable={true}
       >
         <MiniMap />
         <Controls />
@@ -145,10 +163,10 @@ function FlowCanvasInner({
   );
 }
 
-export default function FlowCanvas(props) {
+export default function FlowCanvas({ selectedNode, ...props }) {
   return (
     <ReactFlowProvider>
-      <FlowCanvasInner {...props} />
+      <FlowCanvasInner selectedNode={selectedNode} {...props} />
     </ReactFlowProvider>
   );
 }
